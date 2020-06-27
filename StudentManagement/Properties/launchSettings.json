@@ -1,0 +1,30 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,     //windows验证
+    "anonymousAuthentication": true, //是否启用匿名验证
+    "iisExpress": {
+      "applicationUrl": "http://localhost:61208",//应用链接地址
+      "sslPort": 0                                          //ssl端口号
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",  //命名名称
+      "launchBrowser": true,                  //是否进行浏览器加载
+      "environmentVariables": { //环境变量
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MyKey": "appsetting.environment.jsonMyKey"
+
+      } 
+    },
+    "StudentManagement": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MyKey": "appsetting.environment.jsonMyKey"
+      }
+    }
+  }
+}

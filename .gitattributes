@@ -2,6 +2,7 @@
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
 *.js linguist-language=c#
+*.javascript linguist-language=c#
 *.css linguist-language=c#
 *.html linguist-language=c#
 ###############################################################################

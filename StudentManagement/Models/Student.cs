@@ -27,6 +27,6 @@ namespace StudentManagement.Models
         [Display(Name = "邮箱地址")]
         [RegularExpression(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", ErrorMessage = "邮箱格式不正确")]
         public string Email { get; set; }
-
+        public string PhotoPath { get; set; }
     }
 }

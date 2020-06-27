@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,11 +17,22 @@ namespace StudentManagement
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddDbContextPool<AppDbContext>(
+                options=>options.UseSqlServer(_configuration.GetConnectionString("StudentDBConnection"))
+                );
             services.AddSingleton<IWelcomService, WelcomeService>();//从头到尾只生成一个
-            services.AddSingleton<IStudentRepository,MockStudentRepository>();
+            //services.AddSingleton<IStudentRepository,MockStudentRepository>();
+            services.AddScoped<IStudentRepository,SQLStudentRepository>();
+                    
+                    
         }
 
 

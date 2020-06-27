@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 
 namespace StudentManagement.Models
@@ -35,5 +36,29 @@ namespace StudentManagement.Models
             _studentList.Add(student);
             return student;
         }
-     }
+
+        public Student Update(Student updateStudent)
+        {
+            Student student = _studentList.FirstOrDefault(s=>s.Id==updateStudent.Id);
+            if(student!=null)
+            {
+                student.Name = updateStudent.Name;
+                student.Email = updateStudent.Email;
+                student.ClassName = updateStudent.ClassName;
+            }
+            return student;
+        }
+
+        public Student Delete(int id)
+        {
+            Student student = _studentList.FirstOrDefault(s => s.Id == id);
+            if(student!=null)
+            {
+                _studentList.Remove(student);
+            }
+
+            return student;
+        }
+
+    }
 }

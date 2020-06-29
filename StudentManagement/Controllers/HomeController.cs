@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -55,27 +56,28 @@ namespace StudentManagement.Controllers
             if(ModelState.IsValid)
             {
                 string uniqueFileName = null;
-                //多文件上传
-                //if (model.Photos != null&&model.Photos.Count>0)
-                //{
+                ////多文件上传
+                ////if (model.Photos != null&&model.Photos.Count>0)
+                ////{
 
-                //foreach(var photo in model.Photos)
+                ////foreach(var photo in model.Photos)
+                ////{
+                ////    string uploadsFolder = Path.Combine(hostingEnviroment.WebRootPath, "images");
+                ////    uniqueFileName = Guid.NewGuid().ToString() + "_" +photo.FileName;
+                ////    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                ////    photo.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                ////}
+
+                //// }
+                //if (model.Photo != null)
                 //{
                 //    string uploadsFolder = Path.Combine(hostingEnviroment.WebRootPath, "images");
-                //    uniqueFileName = Guid.NewGuid().ToString() + "_" +photo.FileName;
+                //    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
                 //    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                //    photo.CopyTo(new FileStream(filePath, FileMode.Create));
-
+                //    model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
                 //}
-
-                // }
-                if (model.Photo != null)
-                {
-                    string uploadsFolder = Path.Combine(hostingEnviroment.WebRootPath, "images");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
-                }
+                uniqueFileName =UpLodes(model);
 
                     Student newStudent = new Student()
                 {
@@ -85,11 +87,73 @@ namespace StudentManagement.Controllers
                     PhotoPath = uniqueFileName
                 };
                 _studentRepository.Add(newStudent);
+                Console.WriteLine("############################################");
+                Console.WriteLine(newStudent.Id);
                 return RedirectToAction("Detail", new { id = newStudent.Id });
             }
 
             return View();
             
+        }
+
+
+        [HttpGet]
+        public ViewResult Edit(int id)
+        {
+            Student student = _studentRepository.GetStudent(id);
+            
+            StudentEditViewModel studentEditViewModel = new StudentEditViewModel
+            {
+                Id = student.Id,
+                Name = student.Name,
+                ClassName = student.ClassName,
+                ExistingPhotoPath = student.PhotoPath,
+                Email = student.Email
+            };
+            return View(studentEditViewModel);
+        }
+        [HttpPost]
+        public IActionResult Edit(StudentEditViewModel studentEditViewModel)
+        {
+            if(ModelState.IsValid)
+            {
+                Student student = _studentRepository.GetStudent(studentEditViewModel.Id);
+                student.Name = studentEditViewModel.Name;
+                student.Email = studentEditViewModel.Email;
+                student.ClassName = studentEditViewModel.ClassName;
+                string uniqueFileName = studentEditViewModel.ExistingPhotoPath;
+                if (studentEditViewModel.Photo!=null)
+                {
+                    if(studentEditViewModel.ExistingPhotoPath!=null)
+                    {
+                        string filePath = Path.Combine(hostingEnviroment.WebRootPath,"images",studentEditViewModel.ExistingPhotoPath);
+                        System.IO.File.Delete(filePath);
+                    }
+                    uniqueFileName = UpLodes(studentEditViewModel);
+                }
+                student.PhotoPath = uniqueFileName;
+                _studentRepository.Update(student);
+
+                return RedirectToAction("Index");
+            }
+            return View(studentEditViewModel);
+        }
+
+        private string UpLodes(StudentCreateViewModel model)
+        {
+            string uniqueFileName = null;
+            if (model.Photo != null)
+            {
+                string uploadsFolder = Path.Combine(hostingEnviroment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.Photo.CopyTo(fileStream);
+                }
+                    
+            }
+            return uniqueFileName;
         }
     }
 }

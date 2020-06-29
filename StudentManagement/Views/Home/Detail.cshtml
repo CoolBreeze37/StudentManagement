@@ -1,7 +1,7 @@
 ﻿@model HomeDetialsViewsModel
 @{
     // Layout ="_Layout";
-    ViewBag.Title = "学生详情页";
+    ViewBag.Title = Model.PageTitle;
     var photoPath = "~/images/" + (Model.student.PhotoPath??"timg.png");
 }
 
@@ -15,7 +15,7 @@
 
                 <div class="card-body text-center">
                     <img src="@photoPath" width="55%" height="300px" alt="Alternate Text" asp-append-version="true"/>  
-                    <h4>学生ID：@Model.student.Id</h4>
+                    <h4 >学生ID：@Model.student.Id</h4>
                     <h4>邮箱：@Model.student.Email</h4>
                     <h4>班级名称：@Model.student.ClassName</h4>
                 </div>
